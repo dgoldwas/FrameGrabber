@@ -46,6 +46,8 @@ ffprobe -version
 
 If either command is not recognized, restart FrameGrabber after updating `PATH`.
 
+On startup, FrameGrabber checks for both tools. If either is missing, it offers to install the FFmpeg Essentials package automatically with `winget`. The installation requires Windows Package Manager to be available and may require restarting FrameGrabber before the refreshed `PATH` is visible.
+
 ## Running from source
 
 Clone the repository, open a PowerShell window in the project folder, and run:
