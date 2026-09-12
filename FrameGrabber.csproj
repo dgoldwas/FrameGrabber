@@ -8,6 +8,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>FrameGrabber</AssemblyName>
     <RootNamespace>FrameGrabber</RootNamespace>
-    <ApplicationIcon />
+    <ApplicationIcon>assets\FrameGrabber.ico</ApplicationIcon>
   </PropertyGroup>
+  <ItemGroup>
+    <Resource Include="assets\FrameGrabber.ico" />
+  </ItemGroup>
 </Project>

@@ -10,15 +10,20 @@ The interface is designed for editors, creators, archivists, and anyone who need
 - Browse for files when drag and drop is not convenient.
 - Supports common FFmpeg-readable containers, including MKV, MP4, MOV, WebM, AVI, M4V, and transport streams.
 - Scrub through the video with a timeline.
-- Enter an exact timecode in `HH:MM:SS.mmm` format, or enter seconds such as `93.5`.
+- Step forward or backward one source frame at a time.
+- Jump between embedded video chapters when chapter metadata is available.
+- Enter an exact frame timecode in `HH:MM:SS.frames` format, or enter seconds such as `93.5`.
 - Automatically render a preview for the selected moment.
 - Export a PNG at the source video's native resolution.
-- Use a stable, recreation-friendly filename such as `scene-00-01-23.450.png`.
+- Use a stable, recreation-friendly filename such as `scene-00-01-23.11.png`.
 - Detect and display source resolution, codec, pixel format, color depth, color space, transfer, and primaries.
 - Detect HDR10/PQ, HLG, wide-gamut BT.2020, and Dolby Vision metadata when FFprobe exposes it.
 - Tone-map HDR and Dolby Vision frames to SDR BT.709 for both the preview and exported PNG.
 - Choose a default export folder. The choice persists between launches.
+- Build a queue of frames, edit queued timecodes, preview queue items, remove or reorder items, and batch-export them.
+- Save queues as JSON and import them later to restore the source video and exact frame list.
 - Modern dark WPF interface with a deliberately small, distraction-free workflow.
+- Custom multi-resolution Windows application icon based on a film frame and capture aperture.
 
 ## Requirements
 
@@ -72,10 +77,16 @@ bin\Release\net8.0-windows\publish\FrameGrabber.exe
 6. Choose an export location with **Choose** if needed.
 7. Select **Export PNG**.
 
+### Building a frame queue
+
+Select **Add current frame** whenever the preview is on a frame you want to keep. Each queue row can be edited directly, previewed, moved up or down, or removed. **Export all PNGs** batch-renders the queue to the selected export folder. **Save queue** writes a portable JSON file containing the source path and timecodes; **Import** restores it for later re-export.
+
+The frame and chapter buttons use the video's reported frame rate and chapter metadata. If a file has no chapters, the chapter controls remain inactive.
+
 Exports are saved as:
 
 ```text
-original-filename-HH-MM-SS.mmm.png
+original-filename-HH-MM-SS.frames.png
 ```
 
 Colons are replaced with hyphens so the filename is valid on Windows and remains easy to map back to the original timecode.
