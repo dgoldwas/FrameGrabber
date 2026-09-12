@@ -112,7 +112,24 @@ Models.cs             Video metadata model
 
 ## Versioning and releases
 
-FrameGrabber uses date-based release versions in the format `vYYYY.MM.DD`. The initial release is `v2026.09.12`. If another release is made on the same date, use a variant suffix such as `v2026.09.12.1`, then `v2026.09.12.2`.
+FrameGrabber uses date-based release versions in the format `vYYYY.MM.DD`. If another release is made on the same date, use a variant suffix such as `v2026.09.12.1`, then `v2026.09.12.2`.
+
+## Version log
+
+### v2026.09.12.1
+
+- Added frame-forward and frame-backward navigation.
+- Added one-second and five-second seek controls.
+- Added chapter navigation and automatic chapter-selector synchronization.
+- Added editable frame queues with preview, remove, reorder, import, export, clear, and batch PNG export actions.
+- Added direct timeline click seeking.
+- Added a custom Windows application icon and refined dark ComboBox styling.
+- Added a persistent default export folder.
+
+### v2026.09.12
+
+- Initial FrameGrabber release.
+- Added drag-and-drop video loading, FFmpeg metadata inspection, frame preview, HDR/Dolby Vision SDR tone-mapping, native-resolution PNG export, and timecode-based filenames.
 
 ## License
 
