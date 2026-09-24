@@ -1,6 +1,8 @@
 $ErrorActionPreference = 'Stop'
 Push-Location $PSScriptRoot
 try {
+    dotnet clean FrameGrabber.csproj -c Release -r win-x64 -v:quiet
+    if ($LASTEXITCODE -ne 0) { throw "dotnet clean failed with exit code $LASTEXITCODE" }
     dotnet publish FrameGrabber.csproj -c Release -r win-x64 --self-contained true `
         -p:PublishSingleFile=true `
         -p:IncludeNativeLibrariesForSelfExtract=true `

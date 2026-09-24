@@ -17,6 +17,9 @@ foreach ($tool in @($FfmpegExe, $FfprobeExe)) {
     }
 }
 
+dotnet clean (Join-Path $project 'FrameGrabber.csproj') -c Release -r win-x64 -v:quiet
+if ($LASTEXITCODE -ne 0) { throw "dotnet clean failed with exit code $LASTEXITCODE" }
+
 $staging = Join-Path $project 'obj\portable-tools'
 New-Item -ItemType Directory -Path $staging -Force | Out-Null
 Copy-Item -LiteralPath $FfmpegExe -Destination (Join-Path $staging 'ffmpeg.exe') -Force
