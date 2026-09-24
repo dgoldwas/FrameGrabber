@@ -9,7 +9,7 @@ public sealed class MediaService
 {
     private static string Run(string file, params string[] args)
     {
-        var psi = new ProcessStartInfo(file) { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true, CreateNoWindow = true };
+        var psi = new ProcessStartInfo(MediaTools.Resolve(file)) { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true, CreateNoWindow = true };
         foreach (var arg in args) psi.ArgumentList.Add(arg);
         using var p = Process.Start(psi) ?? throw new InvalidOperationException($"Could not start {file}.");
         var output = p.StandardOutput.ReadToEnd(); var error = p.StandardError.ReadToEnd(); p.WaitForExit();

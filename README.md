@@ -28,14 +28,17 @@ The interface is designed for editors, creators, archivists, and anyone who need
 ## Requirements
 
 - Windows 10 or later.
-- .NET 8 Desktop Runtime, unless using the framework-dependent build through `dotnet run`.
-- FFmpeg and FFprobe available on the system `PATH`.
+- For a normal source build: .NET 8 Desktop Runtime and FFmpeg/FFprobe beside the app or on `PATH`.
+- For the single-file release: FFmpeg/FFprobe beside the app or on `PATH`; .NET is included.
+- For a locally built, FFmpeg-bundled executable: no separate .NET or FFmpeg installation.
 
 FrameGrabber uses the `ffmpeg` and `ffprobe` command-line tools rather than embedding a media library. This keeps the application small and lets FFmpeg provide broad codec and container support.
 
+FrameGrabber first looks for `ffmpeg.exe` and `ffprobe.exe` beside its own executable, then on `PATH`. The optional locally built FFmpeg-bundled version embeds both command-line tools in one executable. On first run, it extracts them to `%LOCALAPPDATA%\FrameGrabber\tools` so Windows can launch them. .NET may also extract runtime files to `%TEMP%\.net`.
+
 ## Installing FFmpeg
 
-Install an FFmpeg Windows build that includes both `ffmpeg.exe` and `ffprobe.exe`, then add its `bin` directory to your system or user `PATH`.
+Install an FFmpeg Windows build that includes both `ffmpeg.exe` and `ffprobe.exe`, then place those files beside `FrameGrabber.exe` or add their `bin` directory to your system or user `PATH`.
 
 Verify the installation from PowerShell:
 
@@ -44,7 +47,7 @@ ffmpeg -version
 ffprobe -version
 ```
 
-If either command is not recognized, restart FrameGrabber after updating `PATH`.
+If either command is not recognized and the tools are not beside FrameGrabber, restart FrameGrabber after updating `PATH`.
 
 On startup, FrameGrabber checks for both tools. If either is missing, it offers to install the FFmpeg Essentials package automatically with `winget`. The installation requires Windows Package Manager to be available and may require restarting FrameGrabber before the refreshed `PATH` is visible.
 
@@ -68,6 +71,26 @@ The published executable is written to:
 ```text
 bin\Release\net8.0-windows\publish\FrameGrabber.exe
 ```
+
+## Single-file portable build
+
+To build the redistributable release executable without third-party media binaries, run:
+
+```powershell
+.\publish-release.ps1
+```
+
+This writes `dist\release\FrameGrabber.exe`. It runs without an installed .NET runtime. Put `ffmpeg.exe` and `ffprobe.exe` beside it after obtaining those tools from their distributor, or let FrameGrabber offer to install them through `winget`.
+
+To build a fully self-contained executable for your own use, on a Windows build machine with .NET 8 SDK, FFmpeg, and FFprobe installed, run:
+
+```powershell
+.\publish-portable.ps1
+```
+
+The only file needed from the output folder is `dist\portable\FrameGrabber.exe`. The script uses the FFmpeg executables on `PATH`; pass `-FfmpegExe` and `-FfprobeExe` to select other builds. It embeds those binaries at publish time and does not add them to Git. The resulting executable is for Windows x64 and is substantially larger than the normal build.
+
+The installed Gyan Essentials build tested for this project identifies itself as GPLv3, statically links many libraries, and uses `--enable-gpl`. The locally bundled executable is for personal use only unless you have resolved FrameGrabber's licensing and the corresponding-source obligations for the exact FFmpeg build. It is not a release artifact. The public release includes FrameGrabber without FFmpeg binaries; users can obtain FFmpeg from its distributor. See [FFmpeg's legal guidance](https://ffmpeg.org/legal.html) and [GNU's GPL FAQ](https://www.gnu.org/licenses/gpl-faq.en.html).
 
 ## Using FrameGrabber
 
@@ -117,6 +140,12 @@ Models.cs             Video metadata model
 FrameGrabber uses date-based release versions in the format `vYYYY.MM.DD`. If another release is made on the same date, use a variant suffix such as `v2026.09.12.1`, then `v2026.09.12.2`.
 
 ## Version log
+
+### v2026.09.23
+
+- Added support for FFmpeg and FFprobe placed beside FrameGrabber, allowing an installer-free setup without changing `PATH`.
+- Added self-contained single-file publishing and an optional local build that embeds FFmpeg tools.
+- Documented FFmpeg redistribution requirements; public release assets do not include FFmpeg binaries.
 
 ### v2026.09.12.1
 
