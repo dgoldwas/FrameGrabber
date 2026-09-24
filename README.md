@@ -88,7 +88,7 @@ To build a fully self-contained executable for your own use, on a Windows build 
 .\publish-portable.ps1
 ```
 
-The only file needed from the output folder is `dist\portable\FrameGrabber.exe`. The script uses the FFmpeg executables on `PATH`; pass `-FfmpegExe` and `-FfprobeExe` to select other builds. It embeds those binaries at publish time and does not add them to Git. The resulting executable is for Windows x64 and is substantially larger than the normal build.
+The script writes `personal-release\FrameGrabber-v<version>-personal.exe`. The script uses the FFmpeg executables on `PATH`; pass `-FfmpegExe` and `-FfprobeExe` to select other builds. It embeds those binaries at publish time, and Git ignores the resulting executable. The resulting executable is for Windows x64 and is substantially larger than the normal build.
 
 The installed Gyan Essentials build tested for this project identifies itself as GPLv3, statically links many libraries, and uses `--enable-gpl`. The locally bundled executable is for personal use only unless you have resolved FrameGrabber's licensing and the corresponding-source obligations for the exact FFmpeg build. It is not a release artifact. The public release includes FrameGrabber without FFmpeg binaries; users can obtain FFmpeg from its distributor. See [FFmpeg's legal guidance](https://ffmpeg.org/legal.html) and [GNU's GPL FAQ](https://www.gnu.org/licenses/gpl-faq.en.html).
 

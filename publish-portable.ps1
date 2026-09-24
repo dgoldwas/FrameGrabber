@@ -27,6 +27,9 @@ Copy-Item -LiteralPath $FfprobeExe -Destination (Join-Path $staging 'ffprobe.exe
 
 Push-Location $project
 try {
+    $version = (dotnet msbuild FrameGrabber.csproj -getProperty:Version).Trim()
+    if ($LASTEXITCODE -ne 0 -or -not $version) { throw 'Could not read the project version' }
+    $publishDirectory = 'obj/personal-publish'
     dotnet publish FrameGrabber.csproj -c Release -r win-x64 --self-contained true `
         -p:PublishSingleFile=true `
         -p:IncludeNativeLibrariesForSelfExtract=true `
@@ -34,9 +37,13 @@ try {
         -p:DebugType=none `
         -p:FfmpegExe=obj/portable-tools/ffmpeg.exe `
         -p:FfprobeExe=obj/portable-tools/ffprobe.exe `
-        -o dist/portable
+        -o $publishDirectory
     if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed with exit code $LASTEXITCODE" }
-    Get-Item 'dist/portable/FrameGrabber.exe' | Select-Object FullName, Length
+    $releaseDirectory = Join-Path $project 'personal-release'
+    New-Item -ItemType Directory -Path $releaseDirectory -Force | Out-Null
+    $destination = Join-Path $releaseDirectory "FrameGrabber-v$version-personal.exe"
+    Copy-Item -LiteralPath (Join-Path $project "$publishDirectory/FrameGrabber.exe") -Destination $destination -Force
+    Get-Item -LiteralPath $destination | Select-Object FullName, Length
 }
 finally {
     Pop-Location
