@@ -95,16 +95,26 @@ The installed Gyan Essentials build tested for this project identifies itself as
 ## Using FrameGrabber
 
 1. Launch FrameGrabber.
-2. Drop a video onto the drop zone, or select **Browse files**.
-3. Review the metadata in the **Video Details** panel.
-4. Move the timeline, or enter a timecode and press **Enter**.
+2. Drop a video onto the window, or select **Open video** / **Browse files**.
+3. Review the metadata in the **Video** panel.
+4. Move the timeline, use the transport buttons, or enter a timecode and press **Enter** or **Go**.
 5. Check the preview image. HDR and Dolby Vision sources are labeled and shown through the SDR tone-map.
-6. Choose an export location with **Choose** if needed.
+6. Choose an export location with **Change** if needed.
 7. Select **Export PNG**.
+
+Below about 980 pixels wide, the details and queue stack under the preview and the page scrolls. Transport buttons wrap instead of clipping.
 
 ### Building a frame queue
 
-Select **Add current frame** whenever the preview is on a frame you want to keep. Each queue row can be edited directly, previewed, moved up or down, or removed. **Export all PNGs** batch-renders the queue to the selected export folder. **Save queue** writes a portable JSON file containing the source path and timecodes; **Import** restores it for later re-export.
+Select **Add current frame** whenever the preview is on a frame you want to keep. Each queue row can be edited directly, shown, moved up or down, or removed. **Export all** batch-renders the queue to the selected export folder. **Save** writes a portable JSON file containing the source path and timecodes; **Import** restores it for later re-export.
+
+### Keyboard
+
+With a video loaded, and focus outside a text box or chapter list:
+
+- Left / Right moves one frame. Shift moves one second. Ctrl moves five seconds.
+- Ctrl+O opens a video. Ctrl+E exports the current frame. Ctrl+Enter adds it to the queue.
+- Enter in the timecode box jumps to that time. Use `HH:MM:SS.frames` or a number of seconds.
 
 The frame and chapter buttons use the video's reported frame rate and chapter metadata. If a file has no chapters, the chapter controls remain inactive.
 
@@ -140,6 +150,14 @@ Models.cs             Video metadata model
 FrameGrabber uses date-based release versions in the format `vYYYY.MM.DD`. If another release is made on the same date, use a variant suffix such as `v2026.09.12.1`, then `v2026.09.12.2`.
 
 ## Version log
+
+### v2026.10.20
+
+- Refined the main window so the preview, transport, video details, and queue stay usable on a narrower window. Below about 980 pixels, the side panel stacks under the preview.
+- Added keyboard transport: Left and Right step one frame, Shift steps one second, Ctrl steps five seconds, Ctrl+O opens a video, Ctrl+E exports the current frame, and Ctrl+Enter adds it to the queue.
+- Restored the chapter bar. Videos with chapter metadata show the chapter title, and Previous and Next step between chapters.
+- Fixed frame timecodes so the clock, Show, and queue export all use the same `HH:MM:SS.frames` frame. On 23.976, 29.97, and 59.94 footage, the frame field is counted at the rounded rate instead of being added as a fraction of a real second.
+- Seek previews and exports with a microsecond timestamp so FFmpeg returns the requested frame.
 
 ### v2026.09.23
 

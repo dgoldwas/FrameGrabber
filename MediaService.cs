@@ -43,7 +43,7 @@ public sealed class MediaService
     {
         var vf = toneMap ? "zscale=t=linear:npl=100,format=gbrpf32le,tonemap=mobius:desat=0,zscale=p=bt709:t=bt709:m=bt709:r=tv,format=rgb24" : "format=rgb24";
         if (previewWidth is not null) vf += $",scale={previewWidth}:-2:flags=lanczos";
-        Run("ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-ss", timestamp.TotalSeconds.ToString("0.###", CultureInfo.InvariantCulture), "-i", input, "-frames:v", "1", "-vf", vf, "-c:v", "png", output);
+        Run("ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-ss", timestamp.TotalSeconds.ToString("0.000000", CultureInfo.InvariantCulture), "-i", input, "-frames:v", "1", "-vf", vf, "-c:v", "png", output);
     }
     private static string Get(JsonElement e, string key) => e.TryGetProperty(key, out var v) ? v.GetString() ?? "" : "";
     private static int Int(JsonElement e, string key) => e.TryGetProperty(key, out var v) && v.TryGetInt32(out var n) ? n : 0;
