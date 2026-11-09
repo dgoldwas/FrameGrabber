@@ -1,7 +1,9 @@
 bin/
 dist/
-personal-release/*.exe
+personal-release/
 obj/
 .vs/
 *.user
 *.suo
+.grok-desktop/
+artifacts/

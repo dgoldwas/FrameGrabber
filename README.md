@@ -72,6 +72,21 @@ The published executable is written to:
 bin\Release\net8.0-windows\publish\FrameGrabber.exe
 ```
 
+## Installer
+
+To build the Windows installer, run:
+
+```powershell
+.uild-installer.ps1
+```
+
+This needs the .NET 8 SDK and [Inno Setup 6](https://jrsoftware.org/isinfo.php), and writes `artifacts\FrameGrabber-<version>-Setup.exe`. The installer puts FrameGrabber in `C:\Program Files\FrameGrabber` and does not include FFmpeg; FrameGrabber uses the FFmpeg on your `PATH` (or beside the exe), or offers to install it through `winget`.
+
+- `-Install` installs the new build after compiling it.
+- `-Release` publishes the installer as GitHub release `v<version>`. Commit first, so the tag matches the build.
+
+**Check for updates** at the right of the status bar looks for the latest GitHub release. FrameGrabber also checks shortly after it starts and every six hours. When a newer release exists, the button becomes **Update to …**; choosing it downloads the installer, checks its SHA-256, closes FrameGrabber, installs through a Windows permission prompt, and reopens.
+
 ## Single-file portable build
 
 To build the redistributable release executable without third-party media binaries, run:
@@ -143,6 +158,9 @@ MainWindow.xaml       Main application layout
 MainWindow.xaml.cs    UI events and application workflow
 MediaService.cs       FFprobe metadata and FFmpeg frame extraction
 Models.cs             Video metadata model
+UpdateService.cs      GitHub release check and update installer launch
+MainWindow.Updates.cs Update button and flow
+installer\            Inno Setup script; build-installer.ps1 builds and releases it
 ```
 
 ## Versioning and releases
@@ -150,6 +168,11 @@ Models.cs             Video metadata model
 FrameGrabber uses date-based release versions in the format `vYYYY.MM.DD`. If another release is made on the same date, use a variant suffix such as `v2026.09.12.1`, then `v2026.09.12.2`.
 
 ## Version log
+
+### v2026.11.09
+
+- Added a Windows installer (`build-installer.ps1`) that installs to Program Files without bundling FFmpeg.
+- Added **Check for updates**, which finds the latest GitHub release and installs it.
 
 ### v2026.10.20
 

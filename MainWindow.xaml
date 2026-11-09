@@ -240,6 +240,7 @@
       </Grid.ColumnDefinitions>
       <TextBlock x:Name="StatusText" Text="Drop a video anywhere, or choose Open video." Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,16,0" />
       <StackPanel Grid.Column="1" Orientation="Horizontal">
+        <Button x:Name="UpdateButton" Content="Check for updates" Style="{StaticResource QuietButton}" Click="UpdateButton_Click" Margin="0,0,16,0" VerticalAlignment="Center" />
         <TextBlock Text="Developed by " Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" />
         <TextBlock VerticalAlignment="Center">
           <Hyperlink NavigateUri="https://warmbutter.com" RequestNavigate="Link_RequestNavigate" Foreground="{StaticResource AccentBrush}">Warm Butter Design</Hyperlink>
