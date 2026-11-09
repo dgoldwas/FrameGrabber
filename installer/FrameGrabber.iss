@@ -11,7 +11,7 @@ AppVersion={#AppVersion}
 VersionInfoVersion={#AppVersion}
 AppPublisher=Warm Butter Design
 AppUpdatesURL=https://github.com/dgoldwas/FrameGrabber/releases
-DefaultDirName={autopf}\FrameGrabber
+DefaultDirName={autopf}\WarmButter\FrameGrabber
 UsePreviousAppDir=no
 DefaultGroupName=FrameGrabber
 DisableProgramGroupPage=yes
@@ -26,6 +26,10 @@ WizardStyle=modern
 SetupIconFile=..\assets\FrameGrabber.ico
 UninstallDisplayIcon={app}\FrameGrabber.exe
 CloseApplications=yes
+
+[InstallDelete]
+; Releases before the WarmButter folder installed to Program Files\FrameGrabber. Remove that copy when upgrading.
+Type: filesandordirs; Name: "{autopf}\FrameGrabber"
 
 [Files]
 ; FFmpeg is deliberately not included. FrameGrabber finds it on PATH or beside the exe, or offers to install it with winget.

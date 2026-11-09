@@ -40,7 +40,7 @@ if ($Install) {
   # Setup elevates through UAC and closes a running FrameGrabber itself.
   $process = Start-Process -FilePath $setup -ArgumentList '/SILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/CLOSEAPPLICATIONS' -Verb RunAs -Wait -PassThru
   if ($process.ExitCode -ne 0) { throw "Setup exited with code $($process.ExitCode)." }
-  $installed = Join-Path $env:ProgramFiles 'FrameGrabber\FrameGrabber.exe'
+  $installed = Join-Path $env:ProgramFiles 'WarmButter\FrameGrabber\FrameGrabber.exe'
   if ((Get-Item -LiteralPath $installed).VersionInfo.ProductVersion -ne $version) { throw "Installed FrameGrabber.exe does not report version $version." }
   Write-Output "Installed FrameGrabber $version to $(Split-Path $installed)."
 }
