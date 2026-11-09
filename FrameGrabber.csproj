@@ -8,7 +8,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>FrameGrabber</AssemblyName>
     <RootNamespace>FrameGrabber</RootNamespace>
-    <Version>2026.10.20</Version>
+    <Version>2026.11.09</Version>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <Product>FrameGrabber</Product>
     <ApplicationIcon>assets\FrameGrabber.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
