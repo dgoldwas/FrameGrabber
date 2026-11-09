@@ -28,8 +28,9 @@ The interface is designed for editors, creators, archivists, and anyone who need
 ## Requirements
 
 - Windows 10 or later.
+- For the installer: FFmpeg/FFprobe on `PATH` or beside the app. .NET is included, and the installer does not bundle FFmpeg.
 - For a normal source build: .NET 8 Desktop Runtime and FFmpeg/FFprobe beside the app or on `PATH`.
-- For the single-file release: FFmpeg/FFprobe beside the app or on `PATH`; .NET is included.
+- For the single-file portable build: FFmpeg/FFprobe beside the app or on `PATH`; .NET is included.
 - For a locally built, FFmpeg-bundled executable: no separate .NET or FFmpeg installation.
 
 FrameGrabber uses the `ffmpeg` and `ffprobe` command-line tools rather than embedding a media library. This keeps the application small and lets FFmpeg provide broad codec and container support.
@@ -38,7 +39,7 @@ FrameGrabber first looks for `ffmpeg.exe` and `ffprobe.exe` beside its own execu
 
 ## Installing FFmpeg
 
-Install an FFmpeg Windows build that includes both `ffmpeg.exe` and `ffprobe.exe`, then place those files beside `FrameGrabber.exe` or add their `bin` directory to your system or user `PATH`.
+FrameGrabber never ships FFmpeg. Install an FFmpeg Windows build that includes both `ffmpeg.exe` and `ffprobe.exe`, then add their `bin` directory to your system or user `PATH`. You can also place the files beside `FrameGrabber.exe`; when it is installed under `C:\Program Files`, that folder needs administrator rights to write to.
 
 Verify the installation from PowerShell:
 
@@ -49,7 +50,7 @@ ffprobe -version
 
 If either command is not recognized and the tools are not beside FrameGrabber, restart FrameGrabber after updating `PATH`.
 
-On startup, FrameGrabber checks for both tools. If either is missing, it offers to install the FFmpeg Essentials package automatically with `winget`. The installation requires Windows Package Manager to be available and may require restarting FrameGrabber before the refreshed `PATH` is visible.
+On startup, FrameGrabber checks for both tools. If either is missing, it offers to install the Gyan FFmpeg Essentials package (`Gyan.FFmpeg.Essentials`) automatically with `winget`. The installation requires Windows Package Manager to be available and may require restarting FrameGrabber before the refreshed `PATH` is visible.
 
 ## Running from source
 
@@ -77,19 +78,19 @@ bin\Release\net8.0-windows\publish\FrameGrabber.exe
 To build the Windows installer, run:
 
 ```powershell
-.uild-installer.ps1
+.\build-installer.ps1
 ```
 
-This needs the .NET 8 SDK and [Inno Setup 6](https://jrsoftware.org/isinfo.php), and writes `artifacts\FrameGrabber-<version>-Setup.exe`. The installer puts FrameGrabber in `C:\Program Files\FrameGrabber` and does not include FFmpeg; FrameGrabber uses the FFmpeg on your `PATH` (or beside the exe), or offers to install it through `winget`.
+This needs the .NET 8 SDK and [Inno Setup 6](https://jrsoftware.org/isinfo.php), and writes `artifacts\FrameGrabber-<version>-Setup.exe`. The installer puts FrameGrabber in `C:\Program Files\WarmButter\FrameGrabber`, adds a Start Menu shortcut (and an optional desktop shortcut), and requires administrator permission. It does not include FFmpeg; FrameGrabber uses the FFmpeg on your `PATH` (or beside the exe), or offers to install it through `winget`. A copy installed by an earlier release in `C:\Program Files\FrameGrabber` is removed when you install over it. Your settings in `%LOCALAPPDATA%\FrameGrabber` are left in place, including after an uninstall.
 
 - `-Install` installs the new build after compiling it.
 - `-Release` publishes the installer as GitHub release `v<version>`. Commit first, so the tag matches the build.
 
-**Check for updates** at the right of the status bar looks for the latest GitHub release. FrameGrabber also checks shortly after it starts and every six hours. When a newer release exists, the button becomes **Update to …**; choosing it downloads the installer, checks its SHA-256, closes FrameGrabber, installs through a Windows permission prompt, and reopens.
+**Check for updates** at the right of the status bar looks for the latest GitHub release. FrameGrabber also checks shortly after it starts and every six hours. When a newer release exists, the button becomes **Update to …**; choosing it downloads the installer, checks its SHA-256, closes FrameGrabber, installs through a Windows permission prompt, and reopens. The queue is not kept across an update, so save it first. Updates always install to the Program Files location, even if you run the check from a portable copy.
 
 ## Single-file portable build
 
-To build the redistributable release executable without third-party media binaries, run:
+For an installer-free copy, build a single executable without third-party media binaries by running:
 
 ```powershell
 .\publish-release.ps1
@@ -105,7 +106,7 @@ To build a fully self-contained executable for your own use, on a Windows build 
 
 The script writes `personal-release\FrameGrabber-v<version>-personal.exe`. The script uses the FFmpeg executables on `PATH`; pass `-FfmpegExe` and `-FfprobeExe` to select other builds. It embeds those binaries at publish time, and Git ignores the resulting executable. The resulting executable is for Windows x64 and is substantially larger than the normal build.
 
-The installed Gyan Essentials build tested for this project identifies itself as GPLv3, statically links many libraries, and uses `--enable-gpl`. The locally bundled executable is for personal use only unless you have resolved FrameGrabber's licensing and the corresponding-source obligations for the exact FFmpeg build. It is not a release artifact. The public release includes FrameGrabber without FFmpeg binaries; users can obtain FFmpeg from its distributor. See [FFmpeg's legal guidance](https://ffmpeg.org/legal.html) and [GNU's GPL FAQ](https://www.gnu.org/licenses/gpl-faq.en.html).
+The installed Gyan Essentials build tested for this project identifies itself as GPLv3, statically links many libraries, and uses `--enable-gpl`. The locally bundled executable is for personal use only unless you have resolved FrameGrabber's licensing and the corresponding-source obligations for the exact FFmpeg build. It is not a release artifact. The public release (the installer) includes FrameGrabber without FFmpeg binaries; users can obtain FFmpeg from its distributor. See [FFmpeg's legal guidance](https://ffmpeg.org/legal.html) and [GNU's GPL FAQ](https://www.gnu.org/licenses/gpl-faq.en.html).
 
 ## Using FrameGrabber
 
@@ -161,13 +162,19 @@ Models.cs             Video metadata model
 UpdateService.cs      GitHub release check and update installer launch
 MainWindow.Updates.cs Update button and flow
 installer\            Inno Setup script; build-installer.ps1 builds and releases it
+publish-release.ps1   Single-file executable without FFmpeg (dist\release)
+publish-portable.ps1  Personal single-file build with FFmpeg embedded (personal-release)
 ```
 
 ## Versioning and releases
 
-FrameGrabber uses date-based release versions in the format `vYYYY.MM.DD`. If another release is made on the same date, use a variant suffix such as `v2026.09.12.1`, then `v2026.09.12.2`.
+FrameGrabber uses date-based release versions in the format `vYYYY.MM.DD`. If another release is made on the same date, use a variant suffix such as `v2026.09.12.1`, then `v2026.09.12.2`. The version is set in one place, `<Version>` in `FrameGrabber.csproj`; `build-installer.ps1 -Release` tags `v<Version>`, and the update check compares against it.
 
 ## Version log
+
+### v2026.11.09.1
+
+- The installer now installs to `C:\Program Files\WarmButter\FrameGrabber` and removes the earlier `Program Files\FrameGrabber` copy.
 
 ### v2026.11.09
 
