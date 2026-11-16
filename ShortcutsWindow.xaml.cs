@@ -34,6 +34,7 @@ public partial class ShortcutsWindow : Window
             ]),
             new("FILES AND SETTINGS",
             [
+                new("New, or close the project", "Ctrl+N / Ctrl+W"),
                 new("Open a video", "Ctrl+O"),
                 new("Open or save a queue", "Ctrl+Shift+O / Ctrl+S"),
                 new("Settings", "Ctrl+,"),

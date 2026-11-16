@@ -23,11 +23,12 @@ The interface is designed for editors, creators, archivists, and anyone who need
 - Build a queue of frames, edit queued timecodes, preview queue items, remove or reorder items, and batch-export them. Queued frames show a thumbnail and their chapter, and appear as marks on the timeline.
 - Undo and redo changes to the queue (Ctrl+Z, Ctrl+Y).
 - Copy the current frame at full resolution (Ctrl+C) or its timecode (Ctrl+Shift+C) to the clipboard.
-- Save queues as JSON and open them later to restore the source video and exact frame list.
+- Save queues as JSON and open them later to restore the source video and exact frame list. Opening a queue renders the thumbnails of its frames in the background.
+- File › New (Ctrl+N) and File › Close project (Ctrl+W) return to an empty window. Closing a changed queue, whether by New, Close project, opening another queue, installing an update or closing FrameGrabber, first asks whether to save it.
 - A menu bar (File, Edit, Navigate, Help) merged into the title bar, as in VideoTrimmer, with every command and its shortcut. Help › Keyboard shortcuts (F1) lists them all.
 - Glass interface in light and dark themes with a choice of seven accents (Butter, Graphite, Sky, Mint, Rose, Violet, Coral), the same ones as RadioStudio and VideoTrimmer. Pick them in Edit › Settings (Ctrl+,); System follows Windows' app mode. The window takes a faint tint from the current frame.
 - Open a video by passing its path on the command line, for example from Open with.
-- Custom multi-resolution Windows application icon based on a film frame and capture aperture.
+- Custom multi-resolution Windows application icon, "Lifted Frame": one still lifted out of a stack of frames. The title bar shows the same mark in the accent color. The artwork is `assets/FrameGrabber-icon.svg`; `assets/make-icon.ps1` rebuilds the `.ico` from its 1024 px PNG.
 
 ## Requirements
 
@@ -175,6 +176,13 @@ publish-portable.ps1  Personal single-file build with FFmpeg embedded (personal-
 FrameGrabber uses date-based release versions in the format `vYYYY.MM.DD`. If another release is made on the same date, use a variant suffix such as `v2026.09.12.1`, then `v2026.09.12.2`. The version is set in one place, `<Version>` in `FrameGrabber.csproj`; `build-installer.ps1 -Release` tags `v<Version>`, and the update check compares against it.
 
 ## Version log
+
+### v2026.11.16.1
+
+- New app icon, "Lifted Frame": one still lifted out of a stack of frames. The title bar shows the same mark in the accent color.
+- File › New (Ctrl+N) and File › Close project (Ctrl+W) return to an empty window.
+- A changed frame queue is no longer lost without warning: New, Close project, opening another queue, installing an update and closing FrameGrabber first offer to save it.
+- Opening a saved queue renders the thumbnails of its frames.
 
 ### v2026.11.16
 

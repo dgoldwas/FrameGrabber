@@ -94,9 +94,10 @@ public partial class MainWindow
         if (availableUpdate is not { } update || updateBusy) return;
         var size = update.Size > 0 ? $" ({update.Size / 1048576.0:N0} MB)" : "";
         var answer = System.Windows.MessageBox.Show(this,
-            $"FrameGrabber {update.Version} is available. You have {UpdateService.CurrentVersion}.\n\nDownload it{size} and install it now? FrameGrabber will close, Windows will ask for permission to install, and FrameGrabber will open again when the update is done. Your frame queue is not kept.",
+            $"FrameGrabber {update.Version} is available. You have {UpdateService.CurrentVersion}.\n\nDownload it{size} and install it now? FrameGrabber will close, Windows will ask for permission to install, and FrameGrabber will open again when the update is done. FrameGrabber offers to save a changed frame queue first.",
             "Update FrameGrabber", MessageBoxButton.OKCancel, MessageBoxImage.Information);
-        if (answer != MessageBoxResult.OK) return;
+        // Asked now rather than as the window closes, so the download isn't wasted on a Cancel.
+        if (answer != MessageBoxResult.OK || !ConfirmDiscard()) return;
 
         updateBusy = true;
         UpdateMenuItem.IsEnabled = false;

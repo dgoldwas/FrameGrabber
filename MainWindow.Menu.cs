@@ -12,6 +12,8 @@ namespace FrameGrabber;
 /// </summary>
 public static class FrameCommands
 {
+    public static readonly RoutedUICommand New = Make("New", new KeyGesture(Key.N, ModifierKeys.Control, "Ctrl+N"));
+    public static readonly RoutedUICommand CloseProject = Make("Close project", new KeyGesture(Key.W, ModifierKeys.Control, "Ctrl+W"));
     public static readonly RoutedUICommand OpenVideo = Make("Open video", new KeyGesture(Key.O, ModifierKeys.Control, "Ctrl+O"));
     public static readonly RoutedUICommand OpenQueue = Make("Open queue", new KeyGesture(Key.O, ModifierKeys.Control | ModifierKeys.Shift, "Ctrl+Shift+O"));
     public static readonly RoutedUICommand SaveQueue = Make("Save queue", new KeyGesture(Key.S, ModifierKeys.Control, "Ctrl+S"));
@@ -56,12 +58,114 @@ public partial class MainWindow
     private QueueItem? editingItem;
     private string editingFrom = "";
     private string? queuePath;
+    // The queue's timecodes as last saved or opened, to tell whether closing it would lose anything.
+    private string[] savedQueue = [];
+    // Raised by New, so a video still loading for the old project doesn't land in the new one.
+    private int workspaceGeneration;
+    private int thumbnailGeneration;
+
+    private bool QueueUnsaved => queue.Count > 0 && !queue.Select(q => q.Timecode).SequenceEqual(savedQueue);
+
+    private void MarkQueueSaved() => savedQueue = queue.Select(q => q.Timecode).ToArray();
+
+    /// <summary>File › New and File › Close project: back to the window as it opens, with no video and an empty queue.</summary>
+    private void ResetWorkspace()
+    {
+        if (!ConfirmDiscard()) return;
+        workspaceGeneration++;
+        previewGeneration++;
+        thumbnailGeneration++;
+        video = null;
+        lastPreview = null;
+        queue.Clear();
+        undoHistory.Clear();
+        redoHistory.Clear();
+        queuePath = null;
+        savedQueue = [];
+
+        PreviewImage.Source = null;
+        PreviewImage.Visibility = Visibility.Collapsed;
+        PreviewMeta.Visibility = Visibility.Collapsed;
+        PreviewHdrTag.Visibility = Visibility.Collapsed;
+        DropHint.Visibility = Visibility.Visible;
+        DropOutline.Visibility = Visibility.Visible;
+        Backdrop.Source = null;
+        FileNameText.Text = "No video loaded";
+        FilePathText.Text = "";
+        VideoChips.Visibility = Visibility.Collapsed;
+        HdrBadge.Visibility = Visibility.Collapsed;
+        ColorText.Text = "";
+        suppress = true;
+        Timeline.Value = 0;
+        Timeline.Maximum = 1;
+        suppress = false;
+        CurrentTimeText.Text = DurationText.Text = TimeInput.Text = "00:00:00.00";
+        ChapterPicker.ItemsSource = null;
+        SetChapterControlsVisibility(false);
+        ChapterNameText.Text = "";
+        TransportPanel.IsEnabled = false;
+        ShowTitle();
+        UpdateQueueChrome();
+        StatusText.Text = "Drop a video anywhere, or choose File › Open video.";
+    }
+
+    /// <summary>Offers to save a queue with unsaved changes before it is closed. False means stay: Cancel, or the save didn't happen.</summary>
+    private bool ConfirmDiscard()
+    {
+        if (!QueueUnsaved) return true;
+        var answer = System.Windows.MessageBox.Show(this, "Save the frame queue before closing it?", "FrameGrabber", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+        if (answer == MessageBoxResult.Cancel) return false;
+        if (answer == MessageBoxResult.No) return true;
+        SaveQueue(saveAs: false);
+        return !QueueUnsaved;
+    }
+
+    /// <summary>Renders a small thumbnail, in the background, for each queued frame that has none, such as those read from a saved queue.</summary>
+    private async Task RefreshThumbnails()
+    {
+        if (video is not { } current) return;
+        var generation = ++thumbnailGeneration;
+        foreach (var item in queue.Where(q => q.Thumbnail is null).ToList())
+        {
+            if (!TryResolveFrame(item.Timecode, out var frame)) continue;
+            var tmp = Path.Combine(Path.GetTempPath(), $"framegrabber-thumb-{Guid.NewGuid():N}.png");
+            try
+            {
+                await Task.Run(() => media.Extract(current.FilePath, TimeOfFrame(frame), tmp, 160, current.IsHdr));
+                var bytes = await File.ReadAllBytesAsync(tmp);
+                if (generation != thumbnailGeneration || video != current) return;
+                item.Thumbnail = DecodePng(bytes);
+                item.Chapter = ChapterAt(TimeOfFrame(frame));
+            }
+            catch
+            {
+                // A frame FFmpeg can't render keeps the empty thumbnail; Show still reports the problem.
+            }
+            finally
+            {
+                try { File.Delete(tmp); } catch { }
+            }
+        }
+    }
+
+    private static BitmapImage DecodePng(byte[] bytes)
+    {
+        var image = new BitmapImage();
+        image.BeginInit();
+        image.CacheOption = BitmapCacheOption.OnLoad;
+        image.StreamSource = new MemoryStream(bytes);
+        image.EndInit();
+        image.Freeze();
+        return image;
+    }
 
     private void WireCommands()
     {
         bool loaded() => video is not null;
         bool hasChapters() => video is { Chapters.Count: > 0 };
 
+        Bind(FrameCommands.New, ResetWorkspace, () => loaded() || queue.Count > 0);
+        Bind(FrameCommands.CloseProject, ResetWorkspace, () => loaded() || queue.Count > 0);
         Bind(FrameCommands.OpenVideo, () => Browse_Click(this, new RoutedEventArgs()));
         Bind(FrameCommands.OpenQueue, () => ImportQueue_Click(this, new RoutedEventArgs()));
         Bind(FrameCommands.SaveQueue, () => SaveQueue(saveAs: false), () => queue.Count > 0);
@@ -173,6 +277,7 @@ public partial class MainWindow
         try
         {
             File.WriteAllText(queuePath, System.Text.Json.JsonSerializer.Serialize(new { Video = video?.FilePath, Timecodes = queue.Select(x => x.Timecode) }, new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
+            MarkQueueSaved();
             StatusText.Text = $"Saved the queue to {Path.GetFileName(queuePath)}";
         }
         catch (Exception ex)
@@ -192,12 +297,7 @@ public partial class MainWindow
             StatusText.Text = "Copying frame…";
             await Task.Run(() => media.Extract(current.FilePath, TimeOfFrame(frame), tmp, null, current.IsHdr));
             var bytes = await File.ReadAllBytesAsync(tmp);
-            var image = new BitmapImage();
-            image.BeginInit();
-            image.CacheOption = BitmapCacheOption.OnLoad;
-            image.StreamSource = new MemoryStream(bytes);
-            image.EndInit();
-            image.Freeze();
+            var image = DecodePng(bytes);
             var data = new System.Windows.DataObject();
             data.SetImage(image);
             // Apps that understand PNG keep its exact pixels; the rest take the bitmap.

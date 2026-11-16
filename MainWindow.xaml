@@ -36,9 +36,12 @@
         <ColumnDefinition Width="Auto" />
       </Grid.ColumnDefinitions>
       <Path Margin="13,0,8,0" Width="18" Height="18" Stretch="Uniform" Stroke="{DynamicResource AccentInkBrush}" StrokeThickness="1.6" StrokeStartLineCap="Round" StrokeEndLineCap="Round" VerticalAlignment="Center"
-            Data="M5,5 H19 A2,2 0 0 1 21,7 V17 A2,2 0 0 1 19,19 H5 A2,2 0 0 1 3,17 V7 A2,2 0 0 1 5,5 Z M7,5 V19 M17,5 V19 M3,9 H7 M3,15 H7 M17,9 H21 M17,15 H21 M14.2,12 A2.2,2.2 0 1 1 9.8,12 A2.2,2.2 0 1 1 14.2,12 Z" />
+            StrokeLineJoin="Round"
+            Data="M3,11 V19 A2,2 0 0 0 5,21 H17 M5,8 V16 A2,2 0 0 0 7,18 H19 M10,3 H19 A2,2 0 0 1 21,5 V12 A2,2 0 0 1 19,14 H10 A2,2 0 0 1 8,12 V5 A2,2 0 0 1 10,3 Z M10.5,11 L13.5,8 L16,10 L18,8.5" />
       <Menu x:Name="MenuBar" Grid.Column="1" shell:WindowChrome.IsHitTestVisibleInChrome="True">
         <MenuItem Header="_File">
+          <MenuItem Header="_New" Command="{x:Static local:FrameCommands.New}" />
+          <Separator />
           <MenuItem Header="_Open video…" Command="{x:Static local:FrameCommands.OpenVideo}" />
           <MenuItem Header="Open _queue…" Command="{x:Static local:FrameCommands.OpenQueue}" />
           <Separator />
@@ -49,6 +52,7 @@
           <MenuItem Header="Export _all queued" Command="{x:Static local:FrameCommands.ExportAll}" />
           <MenuItem Header="Choose export _folder…" Command="{x:Static local:FrameCommands.ChooseFolder}" />
           <Separator />
+          <MenuItem Header="_Close project" Command="{x:Static local:FrameCommands.CloseProject}" />
           <MenuItem Header="E_xit" Command="{x:Static local:FrameCommands.Exit}" />
         </MenuItem>
         <MenuItem x:Name="EditMenu" Header="_Edit" SubmenuOpened="EditMenu_SubmenuOpened">

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <title>FrameGrabber</title>
+  <rect x="32" y="32" width="960" height="960" rx="224" fill="#0D0F13"/>
+  <rect x="198" y="420" width="552" height="350" rx="48" fill="none" stroke="#596170" stroke-width="48"/>
+  <rect x="250" y="344" width="552" height="350" rx="48" fill="#0D0F13" stroke="#A7AFBD" stroke-width="48"/>
+  <rect x="292" y="226" width="552" height="370" rx="56" fill="#F5C451" stroke="#0D0F13" stroke-width="24"/>
+  <circle cx="710" cy="332" r="34" fill="#0D0F13"/>
+  <path d="M344 536 472 398 562 482 624 426 792 536Z" fill="#0D0F13"/>
+</svg>
