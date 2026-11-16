@@ -47,7 +47,7 @@ if ($Install) {
 
 if ($Release) {
   $tag = "v$version"
-  $notes = "FrameGrabber $version. Install with the Setup.exe below; installed copies offer this release from the update button in the status bar. FFmpeg is not included; FrameGrabber offers to install it with winget."
+  $notes = "FrameGrabber $version. Install with the Setup.exe below; installed copies offer this release from Help › Update. FFmpeg is not included; FrameGrabber offers to install it with winget."
   # Tag the commit that was built, not whatever the default branch points at.
   $commit = (& git -C $PSScriptRoot rev-parse HEAD).Trim()
   & gh release create $tag $setup --repo dgoldwas/FrameGrabber --target $commit --title "FrameGrabber $version" --notes $notes

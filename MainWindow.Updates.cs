@@ -3,7 +3,7 @@ using System.Windows.Threading;
 
 namespace FrameGrabber;
 
-// The status bar offers a manual check and changes to "Update to …" when a release is available.
+// Help offers a manual check and changes to "Update to …" when a release is available, with a dot on Help to point at it.
 public partial class MainWindow
 {
     private readonly DispatcherTimer updateTimer = new() { Interval = TimeSpan.FromHours(6) };
@@ -40,21 +40,22 @@ public partial class MainWindow
 
     private void ShowVersion()
     {
+        AboutMenuItem.InputGestureText = UpdateService.CurrentVersion;
         if (availableUpdate is { } found)
         {
-            UpdateButton.Content = $"Update to {found.Version}";
-            UpdateButton.Style = (Style)FindResource("PrimaryButton");
-            UpdateButton.ToolTip = $"FrameGrabber {found.Version} is available (you have {UpdateService.CurrentVersion}). Click to download and install it.";
+            UpdateMenuItem.Header = $"_Update to {found.Version}…";
+            UpdateMenuItem.ToolTip = $"FrameGrabber {found.Version} is available (you have {UpdateService.CurrentVersion}).";
+            HelpMenu.Tag = "dot";
         }
         else
         {
-            UpdateButton.Content = "Check for updates";
-            UpdateButton.Style = (Style)FindResource("QuietButton");
-            UpdateButton.ToolTip = $"FrameGrabber {UpdateService.CurrentVersion}: check for updates";
+            UpdateMenuItem.Header = "Check for _updates";
+            UpdateMenuItem.ToolTip = null;
+            HelpMenu.Tag = null;
         }
     }
 
-    private async void UpdateButton_Click(object s, RoutedEventArgs e)
+    private async void UpdateMenuItem_Click(object s, RoutedEventArgs e)
     {
         if (updateBusy) return;
         if (availableUpdate is null) await CheckForUpdateAsync(manual: true);
@@ -98,13 +99,13 @@ public partial class MainWindow
         if (answer != MessageBoxResult.OK) return;
 
         updateBusy = true;
-        UpdateButton.IsEnabled = false;
+        UpdateMenuItem.IsEnabled = false;
         try
         {
-            var progress = new Progress<double>(p => UpdateButton.Content = $"Downloading… {p:P0}");
+            var progress = new Progress<double>(p => StatusText.Text = $"Downloading FrameGrabber {update.Version}… {p:P0}");
             pendingUpdateSetup = await UpdateService.DownloadAsync(update, progress, updateLifetime.Token);
             pendingUpdateVersion = update.Version;
-            UpdateButton.Content = "Installing…";
+            StatusText.Text = "Installing…";
             // Closed hands the installer to the helper once the window is gone.
             Close();
         }
@@ -112,7 +113,7 @@ public partial class MainWindow
         catch (Exception ex)
         {
             pendingUpdateSetup = null;
-            UpdateButton.IsEnabled = true;
+            UpdateMenuItem.IsEnabled = true;
             ShowVersion();
             StatusText.Text = "The update couldn't be downloaded: " + ex.Message;
         }

@@ -8,13 +8,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>FrameGrabber</AssemblyName>
     <RootNamespace>FrameGrabber</RootNamespace>
-    <Version>2026.11.09.1</Version>
+    <Version>2026.11.16</Version>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <Product>FrameGrabber</Product>
     <ApplicationIcon>assets\FrameGrabber.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Resource Include="assets\FrameGrabber.ico" />
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
     <EmbeddedResource Include="$(FfmpegExe)" LogicalName="FrameGrabber.Tools.ffmpeg.exe" Condition="'$(FfmpegExe)' != ''" />
     <EmbeddedResource Include="$(FfprobeExe)" LogicalName="FrameGrabber.Tools.ffprobe.exe" Condition="'$(FfprobeExe)' != ''" />
   </ItemGroup>

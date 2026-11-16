@@ -20,9 +20,13 @@ The interface is designed for editors, creators, archivists, and anyone who need
 - Detect HDR10/PQ, HLG, wide-gamut BT.2020, and Dolby Vision metadata when FFprobe exposes it.
 - Tone-map HDR and Dolby Vision frames to SDR BT.709 for both the preview and exported PNG.
 - Choose a default export folder. The choice persists between launches.
-- Build a queue of frames, edit queued timecodes, preview queue items, remove or reorder items, and batch-export them.
-- Save queues as JSON and import them later to restore the source video and exact frame list.
-- Modern dark WPF interface with a deliberately small, distraction-free workflow.
+- Build a queue of frames, edit queued timecodes, preview queue items, remove or reorder items, and batch-export them. Queued frames show a thumbnail and their chapter, and appear as marks on the timeline.
+- Undo and redo changes to the queue (Ctrl+Z, Ctrl+Y).
+- Copy the current frame at full resolution (Ctrl+C) or its timecode (Ctrl+Shift+C) to the clipboard.
+- Save queues as JSON and open them later to restore the source video and exact frame list.
+- A menu bar (File, Edit, Navigate, Help) merged into the title bar, as in VideoTrimmer, with every command and its shortcut. Help › Keyboard shortcuts (F1) lists them all.
+- Glass interface in light and dark themes with a choice of seven accents (Butter, Graphite, Sky, Mint, Rose, Violet, Coral), the same ones as RadioStudio and VideoTrimmer. Pick them in Edit › Settings (Ctrl+,); System follows Windows' app mode. The window takes a faint tint from the current frame.
+- Open a video by passing its path on the command line, for example from Open with.
 - Custom multi-resolution Windows application icon based on a film frame and capture aperture.
 
 ## Requirements
@@ -86,7 +90,7 @@ This needs the .NET 8 SDK and [Inno Setup 6](https://jrsoftware.org/isinfo.php),
 - `-Install` installs the new build after compiling it.
 - `-Release` publishes the installer as GitHub release `v<version>`. Commit first, so the tag matches the build.
 
-**Check for updates** at the right of the status bar looks for the latest GitHub release. FrameGrabber also checks shortly after it starts and every six hours. When a newer release exists, the button becomes **Update to …**; choosing it downloads the installer, checks its SHA-256, closes FrameGrabber, installs through a Windows permission prompt, and reopens. The queue is not kept across an update, so save it first. Updates always install to the Program Files location, even if you run the check from a portable copy.
+**Help › Check for updates** looks for the latest GitHub release. FrameGrabber also checks shortly after it starts and every six hours. When a newer release exists, a dot appears on **Help** and the item becomes **Update to …**; choosing it downloads the installer, checks its SHA-256, closes FrameGrabber, installs through a Windows permission prompt, and reopens. The queue is not kept across an update, so save it first. Updates always install to the Program Files location, even if you run the check from a portable copy.
 
 ## Single-file portable build
 
@@ -160,7 +164,7 @@ MainWindow.xaml.cs    UI events and application workflow
 MediaService.cs       FFprobe metadata and FFmpeg frame extraction
 Models.cs             Video metadata model
 UpdateService.cs      GitHub release check and update installer launch
-MainWindow.Updates.cs Update button and flow
+MainWindow.Updates.cs Help menu update item and flow
 installer\            Inno Setup script; build-installer.ps1 builds and releases it
 publish-release.ps1   Single-file executable without FFmpeg (dist\release)
 publish-portable.ps1  Personal single-file build with FFmpeg embedded (personal-release)
@@ -171,6 +175,15 @@ publish-portable.ps1  Personal single-file build with FFmpeg embedded (personal-
 FrameGrabber uses date-based release versions in the format `vYYYY.MM.DD`. If another release is made on the same date, use a variant suffix such as `v2026.09.12.1`, then `v2026.09.12.2`. The version is set in one place, `<Version>` in `FrameGrabber.csproj`; `build-installer.ps1 -Release` tags `v<Version>`, and the update check compares against it.
 
 ## Version log
+
+### v2026.11.16
+
+- New glass interface with the menu bar merged into the title bar, as in VideoTrimmer: File, Edit, Navigate and Help hold every command with its shortcut, and Help › Keyboard shortcuts (F1) lists them.
+- Light and dark themes with seven accents, chosen in Edit › Settings (Ctrl+,); System follows Windows. Settings also holds the export folder.
+- The window takes a faint tint from the current frame; the timeline marks chapter starts and queued frames.
+- Queued frames show a thumbnail and their chapter. Queue changes can be undone and redone (Ctrl+Z, Ctrl+Y).
+- Copy the current frame (Ctrl+C) or its timecode (Ctrl+Shift+C); go to a timecode with Ctrl+G; step chapters with Page Up and Page Down.
+- Check for updates moved to the Help menu, which shows a dot when an update is waiting.
 
 ### v2026.11.09.1
 
