@@ -256,6 +256,22 @@ public partial class MainWindow
         undoHistory.Push(new QueueSnapshot("edit timecode", queue.Select(q => (q, q == item ? editingFrom : q.Timecode)).ToArray()));
         redoHistory.Clear();
         editingItem = null;
+        // Moving the row is left until editing ends, so the box doesn't jump while it's being typed in.
+        Dispatcher.BeginInvoke(() => { SortQueue(); DrawTimelineMarks(); QueueList.SelectedItem = item; });
+    }
+
+    /// <summary>Where a queued frame sorts: its frame number, with timecodes that don't parse last.</summary>
+    private int QueueOrder(QueueItem item) => TryResolveFrame(item.Timecode, out var frame) ? frame : int.MaxValue;
+
+    /// <summary>Puts the queue in timecode order, keeping the order of equal or unreadable timecodes.</summary>
+    private void SortQueue()
+    {
+        var ordered = queue.OrderBy(QueueOrder).ToList();
+        for (var i = 0; i < ordered.Count; i++)
+        {
+            var from = queue.IndexOf(ordered[i]);
+            if (from != i) queue.Move(from, i);
+        }
     }
 
     private async void QueueTimecode_KeyDown(object s, KeyEventArgs e)

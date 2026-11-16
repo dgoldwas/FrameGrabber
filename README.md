@@ -20,7 +20,7 @@ The interface is designed for editors, creators, archivists, and anyone who need
 - Detect HDR10/PQ, HLG, wide-gamut BT.2020, and Dolby Vision metadata when FFprobe exposes it.
 - Tone-map HDR and Dolby Vision frames to SDR BT.709 for both the preview and exported PNG.
 - Choose a default export folder. The choice persists between launches.
-- Build a queue of frames, edit queued timecodes, preview queue items, remove or reorder items, and batch-export them. Queued frames show a thumbnail and their chapter, and appear as marks on the timeline.
+- Build a queue of frames, edit queued timecodes, preview queue items, remove items, and batch-export them. The queue is always in timecode order. Queued frames show a thumbnail and their chapter, and appear as marks on the timeline.
 - Undo and redo changes to the queue (Ctrl+Z, Ctrl+Y).
 - Copy the current frame at full resolution (Ctrl+C) or its timecode (Ctrl+Shift+C) to the clipboard.
 - Save queues as JSON and open them later to restore the source video and exact frame list. Opening a queue renders the thumbnails of its frames in the background.
