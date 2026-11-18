@@ -1,10 +1,74 @@
-# FrameGrabber
+<p align="center">
+  <img src="assets/FrameGrabber-icon.png" width="96" alt="FrameGrabber icon">
+</p>
 
-FrameGrabber is a focused Windows desktop utility for finding and exporting exact still frames from video. Drop in a video, scrub to the moment you need, confirm the frame in the preview, and export a native-resolution PNG.
+<h1 align="center">FrameGrabber</h1>
 
-The interface is designed for editors, creators, archivists, and anyone who needs a clean reference image from a video without opening a full NLE.
+<p align="center">
+  <strong>The exact frame you want, as a full-resolution PNG, in seconds.</strong><br>
+  A free, open-source Windows app for pulling clean stills out of any video, with no editing suite needed.
+</p>
 
-## Features
+<p align="center">
+  <a href="https://github.com/dgoldwas/FrameGrabber/releases/latest"><strong>⬇ Download for Windows</strong></a>
+  &nbsp;·&nbsp;
+  <a href="#full-feature-list">Features</a>
+  &nbsp;·&nbsp;
+  <a href="#version-log">What's new</a>
+</p>
+
+![FrameGrabber with a frame queue of eight stills, each marked on the timeline](docs/screenshots/hero.png)
+
+Screenshots of a paused player are soft, scaled to your monitor and stuck with whatever overlay the player draws. Opening an editor just to export one frame takes minutes. FrameGrabber does one job: drop in a video, land on the exact frame, and save a native-resolution PNG named after its timecode.
+
+It's made for editors pulling reference frames, creators making thumbnails, archivists cataloguing footage, and anyone who has paused a video and wished the screenshot looked as good as the film.
+
+## Why FrameGrabber
+
+**🎯 Frame-accurate, not "close enough".** Step one source frame at a time, jump by 1 or 5 seconds, skip between chapters, or type a timecode such as `00:01:23.11`. What you see in the preview is exactly the frame you get.
+
+**🖼 Full-resolution output.** Every PNG is rendered by FFmpeg at the video's native resolution: 1080p, 4K or more. It isn't a screen capture, so nothing is scaled down and no player controls get in the way.
+
+**📋 Grab a whole shot list at once.** Queue as many frames as you like. Each one gets a thumbnail, its chapter and a mark on the timeline. Export them all with one click, or save the queue and pick up later.
+
+**🌈 HDR that doesn't look washed out.** HDR10, HLG and Dolby Vision footage is detected and tone-mapped to SDR, so stills from HDR sources look right on any screen and in any document.
+
+![An HDR10 clip tone-mapped to SDR, with its HDR details shown in the side panel](docs/screenshots/hdr.png)
+
+**⌨️ Built for speed.** Every action has a keyboard shortcut. Arrow keys step frames, Ctrl+Enter queues, Ctrl+E exports, and Ctrl+C copies the full-resolution frame straight to the clipboard to paste into Slack, Docs or Photoshop.
+
+**✨ Looks at home on Windows 11.** A glass interface in light or dark, with seven accent colors. The window even takes a subtle tint from the frame you're on.
+
+![FrameGrabber in the light theme with the Sky accent](docs/screenshots/light.png)
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/settings.png" alt="Settings: theme, seven accents, and export folder"></td>
+    <td width="50%"><img src="docs/screenshots/shortcuts.png" alt="The keyboard shortcuts sheet (F1)"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Pick a theme, an accent and a default export folder</sub></td>
+    <td align="center"><sub>Every command has a shortcut; press F1 for the full list</sub></td>
+  </tr>
+</table>
+
+**🧰 Plays almost anything.** MKV, MP4, MOV, WebM, AVI, M4V and transport streams: if FFmpeg can read it, FrameGrabber can grab from it. If FFmpeg isn't installed, FrameGrabber offers to install it for you.
+
+**🔄 Stays up to date.** FrameGrabber checks for new releases and installs them in one click.
+
+## Get started in a minute
+
+1. **[Download the installer](https://github.com/dgoldwas/FrameGrabber/releases/latest)** (`FrameGrabber-<version>-Setup.exe`) and run it.
+2. Open FrameGrabber. If FFmpeg isn't on your PC yet, click **Yes** and it installs itself through `winget`.
+3. Drag a video onto the window, find your frame, and press **Export PNG**.
+
+Free and open source under the [MIT License](LICENSE). Windows 10 or later. See [Requirements](#requirements) for details.
+
+<sub>Demo footage: <a href="https://durian.blender.org/">Sintel</a> trailer, © Blender Foundation, <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>. Shown cropped, with chapter markers added, and as an HDR10 re-encode in the HDR screenshot.</sub>
+
+---
+
+## Full feature list
 
 - Drag and drop video files directly onto the app.
 - Browse for files when drag and drop is not convenient.
@@ -233,4 +297,4 @@ FrameGrabber uses date-based release versions in the format `vYYYY.MM.DD`. If an
 
 ## License
 
-No license has been selected yet. Until a license file is added, all rights are reserved by the repository owner.
+FrameGrabber is released under the [MIT License](LICENSE). FFmpeg is not part of FrameGrabber and is covered by its own license.
